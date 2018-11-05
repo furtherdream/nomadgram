@@ -63,7 +63,7 @@ DJANGO_APPS = [
     'django.contrib.admin',
 ]
 THIRD_PARTY_APPS = [
-    'crispy_forms',
+    #'crispy_forms', 필요 없으니 삭제
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -72,8 +72,10 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'nomadgram.users.apps.UsersAppConfig',
     # Your stuff: custom apps go here
+    'nomadgram.images.apps.ImagesConfig'
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
+# 장고가 시작할 때 처음 불러오는 앱이 installed_App 이다
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 # MIGRATIONS
