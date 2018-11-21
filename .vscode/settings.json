@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/Users/hanseungho/.local/share/virtualenvs/nomadgram-GUiAZIaH/bin/python"
+    "python.pythonPath": "/Users/hanseungho/.local/share/virtualenvs/nomadgram-GUiAZIaH/bin/python",
+    "python.linting.pylintEnabled": true
 }
