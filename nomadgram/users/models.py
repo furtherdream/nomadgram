@@ -12,7 +12,7 @@ class User(AbstractUser):
     # constant를 생성 : 성별 선택을 위해서
     GENDER_CHOICES = (
         ('male', 'Male'),
-        ('Female', 'Female'),
+        ('female', 'Female'),
         ('not-specified', 'Not specified')
     )
 
