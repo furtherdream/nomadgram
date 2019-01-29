@@ -10,6 +10,9 @@ class User(AbstractUser):
     
     # 아래에 gender는 조건을 만들어야 함
     # constant를 생성 : 성별 선택을 위해서
+
+    """ User Model """
+
     GENDER_CHOICES = (
         ('male', 'Male'),
         ('female', 'Female'),
