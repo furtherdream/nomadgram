@@ -31,3 +31,28 @@ class ListAllImages(APIView):
         # return은 클래스의 마지막 문장인 셈이다.
         # Response 역시 많은 method를 가지고 있다. 지금은 data를 사용할 거임
         return Response(data=serializer.data)
+
+
+class ListAllComments(APIView):
+
+    def get(self, request, format=None):
+
+        all_comments = models.Comment.objects.all()
+
+        serializer = serializers.CommentSerializer(all_comments, many=True)
+
+        return Response(data=serializer.data)
+
+
+
+class ListAllLikes(APIView):
+
+    def get(self, request, format=None):
+
+        all_likes = models.Like.objects.all()
+
+        serializer = serializers.LikeSerializer(all_likes, many=True)
+
+        return Response(data=serializer.data)
+
+        # 여기까지 작성해도 정상 동작하지 않음! 왜?? urls에 뷰를 연결해야 하니까!!
