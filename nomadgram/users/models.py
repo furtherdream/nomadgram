@@ -27,6 +27,13 @@ class User(AbstractUser):
     bio = models.TextField(null=True)
     phone = models.CharField(max_length=140, null=True)
     gender = models.CharField(max_length=80, choices=GENDER_CHOICES, null=True)
+    # 팔로우와 팔로잉은 유저가 하는 것이니깐 ("self") 로 User와 연결
+    followers = models.ManyToManyField("self")
+    following = models.ManyToManyField("self")
+
+    # 자동으로 되나
+    # def __str__(self):
+    #     return self.username
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
