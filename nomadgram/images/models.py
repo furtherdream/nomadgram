@@ -22,8 +22,12 @@ class Image(TimeStampedModel):
     caption = models.TextField()
     creator = models.ForeignKey(user_models.User, on_delete=models.PROTECT, null=True)
 
+    # String representation : 각 오브젝트가 어떻게 보이는지에 관한 것
+    # Not a Variable, But Function
+
     def __str__(self):
         return '{} - {}'.format(self.location, self.caption)
+        # 텍스트 1은 location 텍스트 2는 캡션으로 하자
 
 
 class Comment(TimeStampedModel):
@@ -37,6 +41,7 @@ class Comment(TimeStampedModel):
 
     def __str__(self):
         return self.message
+        # 댓글의 경우는 필드가 없고 메세지 밖에 없음
 
 
 class Like(TimeStampedModel):
