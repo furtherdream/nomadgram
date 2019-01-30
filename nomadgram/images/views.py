@@ -1,5 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+# 장고 상태코드를 한 번 가지고 와보자
+from rest_framework import status
 from . import models, serializers
 
 class Feed(APIView):
@@ -43,12 +45,25 @@ class LikeImage(APIView):
         try : 
             found_image = models.Image.objects.get(id = id)
         except models.Image.DoesNotExist:
-            return Response(status=404)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-        new_like = models.Like.objects.create(
-            creator=user,
-            image=found_image
-        )
+        # 이미 좋아요를 한 경우의 처리
+        try:
+            preexisting_like = models.Like.objects.get(
+                creator=user,
+                image=found_image
+            )
+            preexisting_like.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT) #204 : 내용이 없다는 뜻
 
-        return Response(status=200)
+
+        except models.Like.DoesNotExist:
+            new_like = models.Like.objects.create(
+                creator=user,
+                image=found_image
+            )
+
+            new_like.save()
+
+            return Response(status=status.HTTP_201_CREATED)
