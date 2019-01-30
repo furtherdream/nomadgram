@@ -16,8 +16,8 @@ class FeedUserSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    # 댓글은 생성한 사람의 이름 그리고 댓글 순으로 출력되고 있음
-    creator = FeedUserSerializer()
+    # 댓글을 달 때마다 생성자를 바꿔서 달 수는 없으므로 read_only=True 를 해준다.
+    creator = FeedUserSerializer(read_only=True)
 
     class Meta:
         model = models.Comment

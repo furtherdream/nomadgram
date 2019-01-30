@@ -37,7 +37,7 @@ class LikeImage(APIView):
     # 규칙은 데이터베이스에서 뭔가 변화면 post request가 되어야 함
     # Tip : 잠시만 post 를 get으로 바꾸고 urls에 입력한 id를 variable로 입력하여 정상적으로 작동하는지 확인
     # request 다음에 id(url에서 id를 보내고 있기 때문?)를 넣는 것을 잊으면 안됨!! 에러 발생
-    def get(self, request, id, format=None):
+    def post(self, request, id, format=None):
 
         user = request.user
 
@@ -67,3 +67,33 @@ class LikeImage(APIView):
             new_like.save()
 
             return Response(status=status.HTTP_201_CREATED)
+
+
+class CommentOnImage(APIView):
+
+    def post(self, request, id, format=None):
+
+        # 댓글을 단 사람을 알아내기 위해
+        user = request.user
+        # 이미지가 없는 경우에는 이전에 like 작업 했던 것처럼 try catch로 코딩해준다.
+        try:
+            found_image = models.Image.objects.get(id = id)
+        except models.Image.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+        # 시리얼라이즈는 이미지를 가져오고 보여주는 것 외에도 이미지를 저장하는지를 체크하기도 함
+        # 그냥 보여주는 것 외에도 우리가 무언가를 생성할 때도 도움을 줌
+        serializer = serializers.CommentSerializer(data=request.data)
+
+        # 우리가 지금 작업한 것은 시리얼라이즈를 저장하려고 한 것이고, 이것이 유효한 것을 보여주려 함
+        # 이 시리얼라이즈가 유효한 이유는 "message" 만 받으면 되는 것이기 때문에 {"message" : "hello"} 형태로 post 하니 유효하다
+        if serializer.is_valid():
+            # 그리고 빈 것을 저장하면 안 되니 해당 값을 모델에 붙여놓음
+            serializer.save(creator=user, image=found_image)
+
+            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+
+        else:
+
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
