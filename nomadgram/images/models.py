@@ -20,7 +20,7 @@ class Image(TimeStampedModel):
     file = models.ImageField()
     location = models.CharField(max_length=140)
     caption = models.TextField()
-    creator = models.ForeignKey(user_models.User, on_delete=models.PROTECT, null=True)
+    creator = models.ForeignKey(user_models.User, on_delete=models.PROTECT, null=True, related_name='images')
 
     # String representation : 각 오브젝트가 어떻게 보이는지에 관한 것
     # Not a Variable, But Function
@@ -28,6 +28,9 @@ class Image(TimeStampedModel):
     def __str__(self):
         return '{} - {}'.format(self.location, self.caption)
         # 텍스트 1은 location 텍스트 2는 캡션으로 하자
+
+    class Meta:
+        ordering = ['-created_at']
 
 
 class Comment(TimeStampedModel):
