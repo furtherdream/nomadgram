@@ -22,6 +22,9 @@ class Image(TimeStampedModel):
     caption = models.TextField()
     creator = models.ForeignKey(user_models.User, on_delete=models.PROTECT, null=True, related_name='images')
 
+    # 라이크는 라이크의 내용이 중요한게 아니고 단순히 카운트가 의미가 있음 : property를 사용함
+    # property 는 모델의 필드인데 데이터로 가지는 않지만 모델안에 존제함 : function 임
+    # self는 본인에 이미지에 접근하기 위해
     @property
     def like_count(self):
         return self.likes.all().count()
@@ -33,6 +36,7 @@ class Image(TimeStampedModel):
         return '{} - {}'.format(self.location, self.caption)
         # 텍스트 1은 location 텍스트 2는 캡션으로 하자
 
+    #내가 DB에서 얻은 리스트를 생성된 날짜로 정렬할 수 있게 메타 클래스에 설정해 놨다.
     class Meta:
         ordering = ['-created_at']
 
