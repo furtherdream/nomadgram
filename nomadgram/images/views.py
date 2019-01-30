@@ -28,6 +28,4 @@ class Feed(APIView):
 
         serializer = serializers.ImageSerializer(sorted_list, many=True)
 
-        print(following_users)
-        print(image_list)
         return Response(serializer.data)
