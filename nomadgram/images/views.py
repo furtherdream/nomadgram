@@ -29,3 +29,13 @@ class Feed(APIView):
         serializer = serializers.ImageSerializer(sorted_list, many=True)
 
         return Response(serializer.data)
+
+
+class LikeImage(APIView):
+    # 규칙은 데이터베이스에서 뭔가 변화면 post request가 되어야 함
+    # Tip : 잠시만 post 를 get으로 바꾸고 urls에 입력한 id를 variable로 입력하여 정상적으로 작동하는지 확인
+    def get(self, request, id, format=None):
+
+        print(id)
+
+        return Response(status=200)
