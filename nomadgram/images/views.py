@@ -37,6 +37,18 @@ class LikeImage(APIView):
     # request 다음에 id(url에서 id를 보내고 있기 때문?)를 넣는 것을 잊으면 안됨!! 에러 발생
     def get(self, request, id, format=None):
 
-        print(id)
+        user = request.user
+
+        # 이미지가 없을 때는 404 에러를 원함 그래서 try & catch 를 사용할거임
+        try : 
+            found_image = models.Image.objects.get(id = id)
+        except models.Image.DoesNotExist:
+            return Response(status=404)
+
+
+        new_like = models.Like.objects.create(
+            creator=user,
+            image=found_image
+        )
 
         return Response(status=200)
