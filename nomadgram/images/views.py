@@ -97,3 +97,20 @@ class CommentOnImage(APIView):
         else:
 
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Comment(APIView):
+
+    def delete(self, request, id, format=None):
+
+        # 다른 사람이 쓴 댓글을 삭제할 수 있으면 안된다. 
+        # 생성자와 user가 같은 경우에만 삭제 할 수 있도록 해보자!!
+        user = request.user
+
+        try:
+            comment = models.Comment.objects.get(id=id, creator=user)
+            comment.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        except models.Comment.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
