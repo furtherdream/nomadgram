@@ -29,9 +29,12 @@ class Image(TimeStampedModel):
     def like_count(self):
         return self.likes.all().count()
 
+    @property
+    def comment_count(self):
+        return self.comments.all().count()
+
     # String representation : 각 오브젝트가 어떻게 보이는지에 관한 것
     # Not a Variable, But Function
-
     def __str__(self):
         return '{} - {}'.format(self.location, self.caption)
         # 텍스트 1은 location 텍스트 2는 캡션으로 하자
