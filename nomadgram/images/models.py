@@ -1,4 +1,5 @@
 from django.db import models
+from taggit.managers import TaggableManager
 from nomadgram.users import models as user_models
 # models가 두개이기 때문에 장고가 혼란에 빠질 수 있다. 닉네임 : user_models로 불러 올 수 있도록 한다. (충돌 방지)
 
@@ -21,6 +22,8 @@ class Image(TimeStampedModel):
     location = models.CharField(max_length=140)
     caption = models.TextField()
     creator = models.ForeignKey(user_models.User, on_delete=models.PROTECT, null=True, related_name='images')
+    tags = TaggableManager()
+
 
     # 라이크는 라이크의 내용이 중요한게 아니고 단순히 카운트가 의미가 있음 : property를 사용함
     # property 는 모델의 필드인데 데이터로 가지는 않지만 모델안에 존제함 : function 임
