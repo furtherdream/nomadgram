@@ -24,7 +24,13 @@ class Feed(APIView):
              
             for image in user_images:
 
-                image_list.append(image)        
+                image_list.append(image)       
+
+        my_image = user.images.all()[:2]
+
+        for image in my_image:
+
+            image_list.append(image)
 
         # key=lambda x : x.created_at 을 이용해서 get_key를 대체할 수 있음
         sorted_list = sorted(image_list, key=lambda image: image.created_at, reverse=True)
@@ -167,3 +173,24 @@ class Search(APIView):
 
         else :
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class ModerateComments(APIView):
+
+    def delete(self, request, image_id, comment_id, format=None):
+
+        user = request.user
+
+        try :
+            # images/<int:image_id>/comments/<int:comment_id> 이런 형태의 url을 사용할 것임.
+            # 댓글(comment_id)이 달린 이미지(image_id)를 찾고, user가 이미지의 생성자가 맞는지 확인해보고 맞으면 삭제!!
+            comment_to_delete = models.Comment.objects.get(id=comment_id, image__id=image_id, image__creator=user)
+
+            comment_to_delete.delete()
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        
+        except models.Comment.DoesNotExist:
+
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
