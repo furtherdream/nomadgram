@@ -74,7 +74,8 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'nomadgram.users.apps.UsersAppConfig',
     # Your stuff: custom apps go here
-    'nomadgram.images.apps.ImagesConfig'
+    'nomadgram.images.apps.ImagesConfig',
+    'nomadgram.notifications.apps.NotificationsConfig'
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 # 장고가 시작할 때 처음 불러오는 앱이 installed_App 이다
