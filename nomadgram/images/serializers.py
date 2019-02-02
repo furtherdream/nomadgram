@@ -5,6 +5,18 @@ from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
 from nomadgram.users import models as user_models
 
+
+class SmallImageSerializer(serializers.ModelSerializer):
+
+    """ Used for the notifications """
+
+    class Meta:
+        model = models.Image
+        fields = (
+            'file',
+        )
+
+
 class CountImageSerializer(serializers.ModelSerializer):
 
     class Meta:
