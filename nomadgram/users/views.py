@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from . import models, serializers
+from nomadgram.notifications import views as notification_views
 
 
 class ExploreUsers(APIView):
@@ -22,6 +23,8 @@ class FollowUser(APIView):
 
         user = request.user
 
+        # 팔로우 할 경우에 notification이 뜬다. 여기서 해당 function을 실행해줌
+
         try:
             user_to_follow = models.User.objects.get(id=id)
         except models.User.DoesNotExist:
@@ -30,6 +33,9 @@ class FollowUser(APIView):
         user.following.add(user_to_follow)
 
         user.save()
+
+        # notification function
+        notification_views.create_notifications(user, user_to_follow, 'follow')
 
         return Response(status=status.HTTP_200_OK)
 

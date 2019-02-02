@@ -3,6 +3,7 @@ from rest_framework.response import Response
 # 장고 상태코드를 한 번 가지고 와보자
 from rest_framework import status
 from . import models, serializers
+from nomadgram.notifications import views as notification_views
 
 class Feed(APIView):
 
@@ -65,6 +66,9 @@ class LikeImage(APIView):
 
             new_like.save()
 
+            notification_views.create_notifications(user, found_image.creator, 'like', found_image)
+
+
             return Response(status=status.HTTP_201_CREATED)
 
 
@@ -114,6 +118,10 @@ class CommentOnImage(APIView):
         if serializer.is_valid():
             # 그리고 빈 것을 저장하면 안 되니 해당 값을 모델에 붙여놓음
             serializer.save(creator=user, image=found_image)
+
+            # comment를 누군가가 남길 경우 알림을 해주기 위해 해당 펑션을 가지고 온다.
+            # request.data['message'] / serializer.data['message'] 둘 다 가능
+            notification_views.create_notifications(user, found_image.creator, 'comment', found_image, serializer.data['message'])
 
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
