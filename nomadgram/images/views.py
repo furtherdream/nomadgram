@@ -143,7 +143,19 @@ class Search(APIView):
 
     def get(self, request, farmat=None):
 
-        # print(request.query_params)
-
         hashtags = request.query_params.get('hashtags', None)
-        print(hashtags)
+
+        # request.query_params를 통해 파라미터로 만듦, 아무것도 없을 경우 None을 보냄
+        # if로 None이 아닐경우 아래처럼 해쉬 태그를 검색되게 만들고, None 일 경우는 오류코드 보냄
+        if hashtags is not None : 
+
+            hashtags = hashtags.split(",")
+
+            images = models.Image.objects.filter(tags__name__in=hashtags).distinct()
+
+            serializer = serializers.CountImageSerializer(images, many=True)
+
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+        else :
+            return Response(status=status.HTTP_400_BAD_REQUEST)

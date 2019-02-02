@@ -69,6 +69,7 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount',
     'rest_framework', # REST framework
     'taggit', # search for Image by hashtag
+    'taggit_serializer', # taggit serializer
 ]
 LOCAL_APPS = [
     'nomadgram.users.apps.UsersAppConfig',
