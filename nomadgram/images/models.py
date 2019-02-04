@@ -54,7 +54,7 @@ class Comment(TimeStampedModel):
     # 댓글은 댓글을 생성한 생성자가 있고, 어떤 이미지에 달렸는지 이미지가 존재함
     message = models.TextField()
     creator = models.ForeignKey(user_models.User, on_delete=models.PROTECT, null=True)
-    image = models.ForeignKey(Image, on_delete=models.PROTECT, null=True, related_name='comments')
+    image = models.ForeignKey(Image, on_delete=models.CASCADE, null=True, related_name='comments')
 
     def __str__(self):
         return self.message
@@ -68,7 +68,7 @@ class Like(TimeStampedModel):
     # 좋아요는 이미지 / 아이디 / 생성자가 필요하다
     # foreignKey() 는 장고가 () 안에 있는 것을 찾아옴 => 유저 > 모델 > 클레스의 유저를 불러와야 함
     creator = models.ForeignKey(user_models.User, on_delete=models.PROTECT, null=True)
-    image = models.ForeignKey(Image, on_delete=models.PROTECT, null=True, related_name='likes')
+    image = models.ForeignKey(Image, on_delete=models.CASCADE, null=True, related_name='likes')
 
     def __str__(self):
         return 'User: {} - Image Caption: {}'.format(self.creator.username, self.image.caption)
