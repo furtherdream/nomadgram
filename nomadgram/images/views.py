@@ -3,6 +3,8 @@ from rest_framework.response import Response
 # 장고 상태코드를 한 번 가지고 와보자
 from rest_framework import status
 from . import models, serializers
+from nomadgram.users import models as user_models
+from nomadgram.users import serializers as user_serializers
 from nomadgram.notifications import views as notification_views
 
 class Feed(APIView):
@@ -41,16 +43,29 @@ class Feed(APIView):
 
 
 class LikeImage(APIView):
+
+
+    def get(self, request, image_id, format=None):
+
+        # image__id : 이미지 오브젝트 안에 id가 있음 (Like 모델에)
+        likes = models.Like.objects.filter(image__id = image_id)
+        like_creators_ids = likes.values("creator_id")
+        users = user_models.User.objects.filter(id__in=like_creators_ids)
+
+        serializer = user_serializers.ListUserSerializer(users, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
     # 규칙은 데이터베이스에서 뭔가 변화면 post request가 되어야 함
     # Tip : 잠시만 post 를 get으로 바꾸고 urls에 입력한 id를 variable로 입력하여 정상적으로 작동하는지 확인
     # request 다음에 id(url에서 id를 보내고 있기 때문?)를 넣는 것을 잊으면 안됨!! 에러 발생
-    def post(self, request, id, format=None):
+    def post(self, request, image_id, format=None):
 
         user = request.user
 
         # 이미지가 없을 때는 404 에러를 원함 그래서 try & catch 를 사용할거임
         try : 
-            found_image = models.Image.objects.get(id = id)
+            found_image = models.Image.objects.get(id = image_id)
         except models.Image.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -80,12 +95,12 @@ class LikeImage(APIView):
 
 class UnlikeImage(APIView):
 
-    def delete(self, request, id, format=None):
+    def delete(self, request, image_id, format=None):
 
         user = request.user
 
         try : 
-            found_image = models.Image.objects.get(id = id)
+            found_image = models.Image.objects.get(id = image_id)
         except models.Image.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -202,10 +217,33 @@ class ImageDetail(APIView):
         user = request.user
 
         try :
-            image = models.Image.objects.get(id=image_id, creator=user)
+            image = models.Image.objects.get(id=image_id)
         except models.Image.DoesNotExist:
             Response(status=status.HTTP_404_NOT_FOUND)
       
         serializer = serializers.ImageSerializer(image)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+    def put(self, request, image_id, format=None):
+
+        user = request.user
+
+        try : 
+            image = models.Image.objects.get(id=image_id, creator=user)
+        except models.Image.DoesNotExist:
+            Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        print(request.data)
+        serializer = serializers.InputImageSerializer(image, data=request.data, partial=True)
+
+        # 시리얼라이즈가 유효하면
+        if serializer.is_valid():
+            
+            serializer.save(creator=user)
+
+            return Response(data=serializer.data, status=status.HTTP_204_NO_CONTENT)
+
+        else :
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
