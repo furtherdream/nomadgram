@@ -183,7 +183,6 @@ class ChangePassword(APIView):
         if user.username == username :
 
             current_password = request.data.get('current_password', None)
-            print(request.data)
 
             if current_password is not None :
 
