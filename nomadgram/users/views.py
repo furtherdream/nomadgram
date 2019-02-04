@@ -5,6 +5,7 @@ from . import models, serializers
 from nomadgram.notifications import views as notification_views
 
 
+
 class ExploreUsers(APIView):
 
     def get(self, resquest, format=None):
@@ -14,6 +15,7 @@ class ExploreUsers(APIView):
         serializer = serializers.ListUserSerializer(last_five, many=True)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
 
 
 class FollowUser(APIView):
@@ -40,6 +42,7 @@ class FollowUser(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
+
 class UnfollowUser(APIView):
 
     def post(self, request, id, format=None):
@@ -56,6 +59,7 @@ class UnfollowUser(APIView):
         user.save()
 
         return Response(status=status.HTTP_200_OK)
+
 
 
 class UserProfile(APIView):
@@ -113,7 +117,6 @@ class UserProfile(APIView):
 
 
 
-
 class UserFollowers(APIView):
 
     def get(self, request, username, format=None):
@@ -131,6 +134,7 @@ class UserFollowers(APIView):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
+
 class UserFollowing(APIView):
 
     def get(self, request, username, format=None):
@@ -146,6 +150,7 @@ class UserFollowing(APIView):
         serializer = serializers.ListUserSerializer(user_following, many=True)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
 
 
 class Search(APIView):
@@ -166,3 +171,45 @@ class Search(APIView):
         
         else : 
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class ChangePassword(APIView):
+
+    def put(self, request, username, format=None):
+
+        user = request.user
+
+        if user.username == username :
+
+            current_password = request.data.get('current_password', None)
+            print(request.data)
+
+            if current_password is not None :
+
+                password_match = user.check_password(current_password)
+
+                if password_match : 
+
+                    new_password = request.data.get('new_password', None)
+                    print(request.data)
+
+                    if new_password is not None : 
+
+                        user.set_password(new_password)
+
+                        user.save()
+
+                        return Response(status=status.HTTP_200_OK)
+
+                    else :
+                        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+                else :
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+            
+            else :
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        else :
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
