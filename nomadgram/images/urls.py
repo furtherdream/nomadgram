@@ -4,6 +4,7 @@ from . import views
 app_name = "images"
 urlpatterns = [
     path("", view=views.Feed.as_view(), name="feed"),
+    path("<int:image_id>/", view=views.ImageDetail.as_view(), name="image_detail"),
     # comment -> comments로 바꿈 : 내가 post를 보낼 때마다 생성되도록
     path("<int:id>/like/", view=views.LikeImage.as_view(), name="like_image"),
     path("<int:id>/unlike/", view=views.UnlikeImage.as_view(), name="unlike_image"),

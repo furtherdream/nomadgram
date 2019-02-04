@@ -78,5 +78,6 @@ class ImageSerializer(TaggitSerializer, serializers.ModelSerializer):
             'comments',
             'like_count',
             'creator',
-            'tags'
+            'tags',
+            'created_at'
         )
