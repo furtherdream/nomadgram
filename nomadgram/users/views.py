@@ -191,16 +191,21 @@ class ChangePassword(APIView):
 
                 if password_match : 
 
-                    new_password = request.data.get('new_password', None)
-                    print(request.data)
+                    new_password1 = request.data.get('new_password1', None)
+                    new_password2 = request.data.get('new_password2', None)                    
 
-                    if new_password is not None : 
+                    if new_password1 and new_password2 is not None : 
 
-                        user.set_password(new_password)
+                        if new_password1 == new_password2:
 
-                        user.save()
+                            user.set_password(new_password1)
 
-                        return Response(status=status.HTTP_200_OK)
+                            user.save()
+
+                            return Response(status=status.HTTP_200_OK)
+
+                        else :
+                            return Response(status=status.HTTP_400_BAD_REQUEST)
 
                     else :
                         return Response(status=status.HTTP_400_BAD_REQUEST)
