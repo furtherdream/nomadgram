@@ -67,6 +67,7 @@ THIRD_PARTY_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook', #registration
     'rest_framework', # REST framework
     'rest_framework.authtoken', # REST Authtoken
     'rest_auth', # REST Auth
