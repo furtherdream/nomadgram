@@ -24,7 +24,10 @@ urlpatterns = [
     ),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
-    path("api-token-auth/", obtain_jwt_token),
+    path("rest-auth/", include('rest_auth.urls')),
+    # rest-auth의 Path 입력 후 jwt token 삭제
+    path("rest-auth/registration/", include('rest_auth.registration.urls')),
+    # path("api-token-auth/", obtain_jwt_token),
     path("images/", include("nomadgram.images.urls", namespace="images"),),
     path("notifications/", include("nomadgram.notifications.urls", namespace="notifications"),),
 
